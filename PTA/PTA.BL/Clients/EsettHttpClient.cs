@@ -1,7 +1,6 @@
 ﻿using PTA.BL.Contracts;
 using PTA.BL.Dtos;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace PTA.BL.Clients
 {

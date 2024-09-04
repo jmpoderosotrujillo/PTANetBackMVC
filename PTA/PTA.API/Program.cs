@@ -1,10 +1,16 @@
 using PTA.BL.Clients;
 using PTA.BL.Contracts;
+using PTA.BL.DependencyInjection;
+
 using PTA.BL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Register DbContext with scoped lifetime
+builder.Services.AddBusinessLogic(builder.Configuration);
+
 // Add services to the container.
+builder.Services.AddScoped<IMarketPartiesService, MarketPartiesService>();
 builder.Services.AddHttpClient<IEsettHttpClient, EsettHttpClient>();
 
 builder.Services.AddControllers();
