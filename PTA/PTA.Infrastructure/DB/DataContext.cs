@@ -9,6 +9,6 @@ namespace PTA.Infrastructure.DB
         {
         }
 
-        public DbSet<DistributionSystemOperator> DistributionSystemOperators { get; set; }
+        public DbSet<DistributionSystemOperator> DistributionSystemOperator { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace PTA.BL.Services
                 entity.CreatedBy = "SYSTEM";
                 entity.CreatedAt = DateTime.Now;
 
-                await _context.DistributionSystemOperators.AddAsync(entity);
+                await _context.DistributionSystemOperator.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
                 return await Task.FromResult(HttpStatusCode.OK);
@@ -36,11 +36,11 @@ namespace PTA.BL.Services
 
         public async ValueTask DeleteAsync(int key)
         {
-            var entity = await _context.DistributionSystemOperators.FindAsync(key);
+            var entity = await _context.DistributionSystemOperator.FindAsync(key);
 
             if (entity != null)
             {
-                _context.DistributionSystemOperators.Remove(entity);
+                _context.DistributionSystemOperator.Remove(entity);
                 await _context.SaveChangesAsync();
             }
         }
@@ -49,7 +49,7 @@ namespace PTA.BL.Services
         {
             try
             {
-                return DistributionSystemOperatorMapper.ToDto(await _context.DistributionSystemOperators
+                return DistributionSystemOperatorMapper.ToDto(await _context.DistributionSystemOperator
                         .AsNoTracking()
                         .FirstOrDefaultAsync(e => e.Id == id));
             }
@@ -64,7 +64,7 @@ namespace PTA.BL.Services
         {
             try
             {
-                return await _context.DistributionSystemOperators
+                return await _context.DistributionSystemOperator
                     .AsNoTracking()
                     .Select(e => DistributionSystemOperatorMapper.ToDto(e))
                     .ToListAsync();
@@ -78,23 +78,31 @@ namespace PTA.BL.Services
 
         public async ValueTask LoadAsync(List<DistributionSystemOperatorDto> dtos)
         {
-            var entities = new List<DistributionSystemOperator>();
-            dtos.ForEach(dto =>
+            try
             {
-                var entity = DistributionSystemOperatorMapper.ToEntity(dto);
-                entity.CreatedBy = "SYSTEM";
-                entity.CreatedAt = DateTime.Now;
+                var entities = new List<DistributionSystemOperator>();
+                dtos.ForEach(dto =>
+                {
+                    var entity = DistributionSystemOperatorMapper.ToEntity(dto);
+                    entity.CreatedBy = "SYSTEM";
+                    entity.CreatedAt = DateTime.Now;
 
-                entities.Add(entity);
-            });
+                    entities.Add(entity);
+                });
 
-            await _context.DistributionSystemOperators.AddRangeAsync(entities);
-            await _context.SaveChangesAsync();
+                await _context.DistributionSystemOperator.AddRangeAsync(entities);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"LoadAsync - An unexpected error occurred: {ex.Message}");
+                throw new Exception($"LoadAsync - An unexpected error occurred: {ex.Message}");
+            }
         }
 
         public async ValueTask UpdateAsync(int key, DistributionSystemOperatorDto dto)
         {
-            var entity = await _context.DistributionSystemOperators.FindAsync(key);
+            var entity = await _context.DistributionSystemOperator.FindAsync(key);
             var entityUdp = DistributionSystemOperatorMapper.ToEntity(dto);
 
             if (entity != null && entityUdp != null)
